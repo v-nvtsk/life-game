@@ -7,14 +7,14 @@ describe('renderGrid', () => {
   })
 
   let container: HTMLElement
-  let field: HTMLElement
+  let grid: HTMLElement
   beforeEach(() => {
     document.body.innerHTML = ''
     container = document.createElement('div')
     container.className = 'game-container'
-    field = document.createElement('table')
-    field.className = 'field'
-    container.append(field)
+    grid = document.createElement('table')
+    grid.className = 'field'
+    container.append(grid)
   })
 
   it("should render nothing if field doesn't exist", () => {
@@ -26,7 +26,14 @@ describe('renderGrid', () => {
   it('should render grid markup', () => {
     expect(container.querySelector('.cell')).toBeNull()
     const size = 5
-    renderGrid(container, size, null)
+    const data = [
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]
+    renderGrid(container, size, data)
 
     const cells: HTMLElement[] = Array.from(container.querySelectorAll('.cell'))
     expect(cells.length).toEqual(25)
@@ -64,6 +71,54 @@ describe('renderGrid', () => {
     testData.forEach(({ data, size, result }) => {
       const liveCells = renderGrid(container, size, data)
       expect(liveCells).toBe(result)
+    })
+  })
+
+  it('should render grid on resize', () => {
+    const testData = [
+      {
+        src: [
+          [0, 1, 0],
+          [0, 1, 0],
+          [0, 1, 0],
+        ],
+        size: 3,
+        newSize: 5,
+        result: [
+          [0, 1, 0, 0, 0],
+          [0, 1, 0, 0, 0],
+          [0, 1, 0, 0, 0],
+          [0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0],
+        ],
+      },
+      {
+        src: [
+          [0, 1, 0, 0, 0],
+          [0, 1, 0, 0, 0],
+          [0, 1, 0, 0, 0],
+          [0, 0, 0, 1, 0],
+          [0, 0, 0, 0, 1],
+        ],
+        size: 5,
+        newSize: 3,
+        result: [
+          [0, 1, 0],
+          [0, 1, 0],
+          [0, 1, 0],
+        ],
+      },
+    ]
+
+    testData.forEach(({ src, size, newSize, result }) => {
+      renderGrid(container, size, src)
+      let cells: HTMLElement[] = Array.from(container.querySelectorAll('.cell'))
+      expect(cells.length).toEqual(size ** 2)
+
+      renderGrid(container, newSize, result)
+      cells = Array.from(container.querySelectorAll('.cell'))
+      expect(cells.length).toEqual(newSize ** 2)
+      expect(cells.map((el) => Number(el.dataset.state))).toEqual(result.flat())
     })
   })
 })
