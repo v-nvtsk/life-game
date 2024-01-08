@@ -31,7 +31,7 @@ html {
 }
 
 .cell {
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgb(255 255 255 / 0.2);
   width: calc(100% / 30);
   height: calc(100% / 30);
   transition: 0.2s;
@@ -43,6 +43,6 @@ html {
 }
 
 .cell[data-state='3'] {
-  background-color: rgba(255, 0, 0, 0.3);
+  background-color: rgb(0 207 164 / 50%);
   transition: 0.2s;
 }
