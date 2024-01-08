@@ -11,6 +11,7 @@ export default function doStep(fieldState: number[][]): number[][] {
       } else if (state === 1 && neighbours >= 2 && neighbours <= 3) {
         newField[i][j] = fieldState[i][j]
       } else if (state === 1 && (neighbours < 2 || neighbours > 3)) {
+        fieldState[i][j] = 3
         newField[i][j] = 0
       }
     }
