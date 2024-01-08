@@ -110,7 +110,7 @@ export default class Game {
       this.timerId = setInterval(() => {
         const fieldState = this.store.getCells()
         const newFieldState = doStep(fieldState)
-        const aliveCells = renderGrid(this.container, this.size, newFieldState)
+        const aliveCells = renderGrid(this.container, this.size, fieldState)
         if (aliveCells === 0) {
           stopCallback()
         }
