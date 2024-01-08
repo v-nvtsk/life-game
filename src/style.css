@@ -1,0 +1,48 @@
+html {
+  background-color: black;
+  color: white;
+}
+
+.game-container,
+.container {
+  /* max-width: 1024px; */
+  width: 100%;
+  height: 100vh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+.controls {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.field {
+  flex-grow: 0;
+  border-collapse: collapse;
+  width: calc(100vh - 200px);
+  height: calc(100vh - 200px);
+}
+
+.cell {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: calc(100% / 30);
+  height: calc(100% / 30);
+  transition: 0.2s;
+}
+
+.cell[data-state='1'] {
+  background-color: green;
+  transition: 0.2s;
+}
+
+.cell[data-state='3'] {
+  background-color: rgba(255, 0, 0, 0.3);
+  transition: 0.2s;
+}
