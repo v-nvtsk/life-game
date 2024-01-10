@@ -9,7 +9,6 @@
     "test": "jest ./src --coverage",
     "test:watch": "jest ./src --watch",
     "prepare": "husky install",
-    "lint-staged": "lint-staged",
     "lint": "npx eslint ./src/**/*.ts",
     "lint:fix": "npm run lint -- --fix",
     "prettier": "npx prettier src --check",
@@ -52,8 +51,8 @@
   },
   "lint-staged": {
     "./src/**/*.ts": [
-      "prettier --list-different",
-      "npm run lint",
+      "npm run prettier",
+      "npm run lint:fix",
       "npm run type-check",
       "npm test"
     ],
