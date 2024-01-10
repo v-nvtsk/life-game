@@ -109,7 +109,6 @@ export default class Game {
           stopCallback();
         }
         this.store.setCells(newFieldState);
-        // }
       }, this.timeInterval);
     }
   }
