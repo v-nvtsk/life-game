@@ -1,13 +1,30 @@
-export default function countNeighbours(field: number[][], x: number, y: number): number {
-  let count = 0
-  for (let i = -1; i <= 1; i++) {
-    for (let j = -1; j <= 1; j++) {
-      if (x + i >= 0 && y + j >= 0 && x + i <= field.length - 1 && y + j <= field.length - 1) {
-        const add = field[x + i][y + j]
-        count += add === 3 ? 1 : add
+interface Request {
+  field: number[][]
+  cellRow: number
+  cellCol: number
+}
+
+export function countNeighbours({ field, cellRow, cellCol }: Request): number {
+  let aliveNeighboursCount = 0
+  const fieldSize = field.length
+
+  ;[-1, 0, 1].forEach((rowNum) => {
+    ;[-1, 0, 1].forEach((colNum) => {
+      const neighbourRow = cellRow + rowNum
+      const neighbourCol = cellCol + colNum
+      const isInsideField =
+        neighbourRow >= 0 && neighbourCol >= 0 && neighbourRow <= fieldSize - 1 && neighbourCol <= fieldSize - 1
+      if (isInsideField) {
+        const isCellDying = field[cellRow + rowNum][cellCol + colNum] === 3
+        if (isCellDying) {
+          aliveNeighboursCount = aliveNeighboursCount + 1
+        } else {
+          aliveNeighboursCount = aliveNeighboursCount + field[cellRow + rowNum][cellCol + colNum]
+        }
       }
-    }
-  }
-  count -= field[x][y]
-  return count
+    })
+  })
+
+  aliveNeighboursCount = aliveNeighboursCount - field[cellRow][cellCol]
+  return aliveNeighboursCount
 }

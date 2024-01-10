@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals'
-import countNeighbours from './count-neighbours'
+import { countNeighbours } from './count-neighbours'
 
 describe('countNeighbours', () => {
   it('should be a function', () => {
@@ -48,7 +48,7 @@ describe('countNeighbours', () => {
     testData.forEach(({ field, result }) => {
       field.forEach((row, i): void => {
         row.forEach((cell, j): void => {
-          expect(countNeighbours(field, i, j)).toBe(result[i][j])
+          expect(countNeighbours({ field, cellRow: i, cellCol: j })).toBe(result[i][j])
         })
       })
     })
