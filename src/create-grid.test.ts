@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals'
-import createGrid from './create-grid'
+import { createGrid } from './create-grid'
 
 describe('createField', () => {
   let field: HTMLTableElement

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals'
-import createMarkUp from './create-markup'
+import { createMarkUp } from './create-markup'
 
 describe('createGame', () => {
   it('should be a function', () => {
@@ -14,7 +14,7 @@ describe('createGame', () => {
     const container = document.createElement('div')
     container.className = 'game-container'
     document.body.append(container)
-    createMarkUp(container, 10, 400)
+    createMarkUp({ container, size: 10, timeInterval: 400 })
     field = container.querySelector('.field')
     btnStart = container.querySelector('.btn-game')
     sizeInput = container.querySelector('.size-input')
@@ -37,6 +37,17 @@ describe('createGame', () => {
       expect(sizeInput.type).toBe('number')
       expect(sizeInput.min).toBe('3')
       expect(sizeInput.value).toBe('10')
+    }
+  })
+
+  it('sizeInput should not be out of bounds', () => {
+    if (sizeInput !== null) {
+      sizeInput.value = '101'
+      sizeInput.dispatchEvent(new Event('input'))
+      expect(sizeInput.value).toBe('100')
+      sizeInput.value = '1'
+      sizeInput.dispatchEvent(new Event('input'))
+      expect(sizeInput.value).toBe('3')
     }
   })
 

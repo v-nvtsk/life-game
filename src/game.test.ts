@@ -24,6 +24,7 @@ describe('Game', () => {
     container.className = 'game-container'
     document.body.append(container)
     game = new Game(container, size, timeOut)
+    game.init()
 
     field = container.querySelector('.field')
     sizeInput = container.querySelector('.size-input')
@@ -49,7 +50,7 @@ describe('Game', () => {
   it('should start game', () => {
     jest.spyOn(global, 'setInterval')
     expect(setInterval).not.toHaveBeenCalled()
-    if (button !== null) button.click()
+    button?.click()
     expect(setInterval).toHaveBeenCalled()
   })
 
@@ -70,7 +71,7 @@ describe('Game', () => {
   })
 
   it('should handle speed change', () => {
-    if (button !== null) button.click()
+    button?.click()
     const mock = jest.spyOn(game, 'restart')
     expect(mock).not.toHaveBeenCalled()
     if (speedInput !== null) {
@@ -95,7 +96,7 @@ describe('Game', () => {
   })
 
   it('should handle size change', () => {
-    if (button !== null) button.click()
+    button?.click()
     if (sizeInput !== null) {
       const newSize = 10
       sizeInput.value = newSize.toString()
@@ -109,7 +110,7 @@ describe('Game', () => {
     const mock = jest.spyOn(game, 'stop')
     expect(mock).not.toHaveBeenCalled()
 
-    if (button !== null) button.click()
+    button?.click()
     jest.runAllTimers()
     expect(mock).toHaveBeenCalled()
   })
@@ -165,7 +166,7 @@ describe('Game', () => {
         const cell = cells[i] as HTMLElement
         if (state === 1) cell.click()
       })
-      if (button !== null) button.click()
+      button?.click()
 
       expect(game.getCells()).not.toEqual(expectedField)
 

@@ -7,9 +7,10 @@ document.body.append(container)
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const game = new Game(container)
+game.init()
 
-// const container1 = document.createElement('div')
-// container1.className = 'game-container'
-// document.body.append(container1)
-// // createGame(container, 30, 400)
-// const game1 = new Game(container1)
+// const container1 = document.createElement("div");
+// container1.className = "game-container";
+// document.body.append(container1);
+// const game1 = new Game(container1);
+// game1.init();

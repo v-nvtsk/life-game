@@ -1,28 +1,31 @@
-import createMarkUp from './create-markup'
-import doStep from './do-step'
-import renderGrid from './render-grid'
-// import renderGrid from './render-grid'
-import Store from './store'
+import { createMarkUp } from './create-markup'
+import { doStep } from './do-step'
+import { renderGrid } from './render-grid'
+import { Store } from './store'
 
 export default class Game {
-  private readonly container: HTMLElement
   private readonly store: Store
-  private size: number = 20
-  private timeInterval: number = 300
   private timerId: NodeJS.Timeout | null = null
 
-  constructor(container: HTMLElement, size: number = 30, timeInterval: number = 400) {
-    this.container = container
-    this.timeInterval = timeInterval
-    this.size = size
-
+  constructor(
+    private readonly container: HTMLElement,
+    private size: number = 30,
+    private timeInterval: number = 400,
+  ) {
     this.store = new Store(this.size)
-    const [field, sizeInput, speedInput, button] = createMarkUp(this.container, this.size, this.timeInterval)
+  }
 
+  init(): void {
+    const { field, sizeInput, speedInput, button } = createMarkUp({
+      container: this.container,
+      size: this.size,
+      timeInterval: this.timeInterval,
+    })
     const inputCallbacks = {
       onSizeChange: (ev: Event) => {
         const input = ev.target as HTMLInputElement
         this.size = Number(input.value)
+        document.documentElement.style.cssText = `--grid-size: ${this.size}`
         this.store.resize(this.size)
         renderGrid(this.container, this.size, this.store.getCells())
       },
@@ -36,9 +39,7 @@ export default class Game {
     }
 
     sizeInput.addEventListener('input', inputCallbacks.onSizeChange)
-
     speedInput.addEventListener('input', inputCallbacks.onSpeedChange)
-
     button.addEventListener('click', (ev) => {
       if (this.timerId === null) {
         gameCallbacks.onStart()
@@ -49,18 +50,12 @@ export default class Game {
 
     const gameCallbacks = {
       onStart: () => {
-        // const input = ev.target as HTMLInputElement
-        // if (input !== null) {
         button.innerHTML = 'Stop'
         this.start(gameCallbacks.onStop)
-        // }
       },
       onStop: () => {
-        // const input = ev.target as HTMLInputElement
-        // if (input !== null) {
         button.innerHTML = 'Start'
         this.stop()
-        // }
       },
     }
 
@@ -95,7 +90,6 @@ export default class Game {
 
     field.addEventListener('click', mouseCallbacks.onClick)
 
-    // TODO: add mouse down
     field.addEventListener('mousedown', mouseCallbacks.onDown)
     field.addEventListener('mousemove', mouseCallbacks.onMove)
   }

@@ -1,6 +1,6 @@
 import initArray from './init-array'
 
-export default class Store {
+export class Store {
   private store: number[][] = [[]]
   private size: number = 0
 
