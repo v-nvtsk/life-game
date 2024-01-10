@@ -2,9 +2,8 @@ import initArray from "./init-array";
 
 export class Store {
   private store: number[][] = [[]];
-  private size: number = 0;
 
-  constructor(size: number) {
+  constructor(private size: number = 0) {
     this.size = size;
     this.setCells(initArray(size));
   }
