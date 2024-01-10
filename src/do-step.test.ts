@@ -1,10 +1,10 @@
-import { describe, expect, it } from '@jest/globals'
-import { doStep } from './do-step'
+import { describe, expect, it } from "@jest/globals";
+import { doStep } from "./do-step";
 
-describe('doStep', () => {
-  it('should be a function', () => {
-    expect(doStep).toBeInstanceOf(Function)
-  })
+describe("doStep", () => {
+  it("should be a function", () => {
+    expect(doStep).toBeInstanceOf(Function);
+  });
 
   const testData = [
     {
@@ -55,11 +55,11 @@ describe('doStep', () => {
         [1, 1, 1],
       ],
     },
-  ]
+  ];
 
-  it('should return new field', () => {
+  it("should return new field", () => {
     testData.forEach(({ src, result }) => {
-      expect(doStep(src)).toEqual(result)
-    })
-  })
-})
+      expect(doStep(src)).toEqual(result);
+    });
+  });
+});

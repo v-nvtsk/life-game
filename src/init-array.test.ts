@@ -1,10 +1,10 @@
-import { describe, expect, it } from '@jest/globals'
-import initArray from './init-array'
+import { describe, expect, it } from "@jest/globals";
+import initArray from "./init-array";
 
-describe('initArray', () => {
-  it('should be a function', () => {
-    expect(initArray).toBeInstanceOf(Function)
-  })
+describe("initArray", () => {
+  it("should be a function", () => {
+    expect(initArray).toBeInstanceOf(Function);
+  });
 
   const testData = [
     {
@@ -25,10 +25,10 @@ describe('initArray', () => {
         [0, 0, 0, 0, 0],
       ],
     },
-  ]
-  it('should return array', () => {
+  ];
+  it("should return array", () => {
     testData.forEach(({ size, arr }) => {
-      expect(initArray(size)).toEqual(arr)
-    })
-  })
-})
+      expect(initArray(size)).toEqual(arr);
+    });
+  });
+});

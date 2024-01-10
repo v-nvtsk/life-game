@@ -1,13 +1,13 @@
-import Game from './game'
-import './style.css'
+import Game from "./game";
+import "./style.css";
 
-const container = document.createElement('div')
-container.className = 'game-container'
-document.body.append(container)
+const container = document.createElement("div");
+container.className = "game-container";
+document.body.append(container);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const game = new Game(container)
-game.init()
+const game = new Game(container);
+game.init();
 
 // const container1 = document.createElement("div");
 // container1.className = "game-container";
