@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals'
-import doStep from './do-step'
+import { doStep } from './do-step'
 
 describe('doStep', () => {
   it('should be a function', () => {

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from '@jest/globals'
-import renderGrid from './render-grid'
+import { renderGrid } from './render-grid'
 
 describe('renderGrid', () => {
   it('should be a function', () => {

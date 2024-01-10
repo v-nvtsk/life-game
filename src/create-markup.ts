@@ -1,29 +1,54 @@
-import appendWithElement from './append-with-element'
-import createGrid from './create-grid'
+import { createElementFromHTML } from './create-element-from-html'
+import { createGrid } from './create-grid'
 
-export default function createMarkUp(container: HTMLElement, size: number, timeInterval: number): HTMLElement[] {
-  const controls = appendWithElement(container, 'div', 'controls')
-  const sizeInput = appendWithElement(controls, 'input', 'size-input') as HTMLInputElement
-  sizeInput.type = 'number'
-  sizeInput.min = '3'
-  sizeInput.value = size.toString()
+interface CreateMarkUpRequest {
+  container: HTMLElement
+  size: number
+  timeInterval: number
+}
 
-  const speedInput = appendWithElement(controls, 'input', 'speed-input') as HTMLInputElement
-  const speedValue: HTMLElement = appendWithElement(controls, 'span', 'speed-value', timeInterval + ' ms')
-  speedInput.type = 'range'
-  speedInput.min = '10'
-  speedInput.max = '1000'
-  speedInput.step = '10'
-  speedInput.value = timeInterval.toString()
+interface Markup {
+  field: HTMLElement
+  sizeInput: HTMLInputElement
+  speedInput: HTMLInputElement
+  button: HTMLButtonElement
+}
+
+function createMarkUp({ container, size, timeInterval }: CreateMarkUpRequest): Markup {
+  const controls = createElementFromHTML('<div class="controls"></div>')[0]
+  const sizeInput = createElementFromHTML(`
+    <input class="size-input" type="number" min="3" max="100" value="${size.toString()}"/>
+  `)[0] as HTMLInputElement
+  const speedInput = createElementFromHTML(`
+    <input class="speed-input" type="range" min="10" max="1000"
+    step="10" value="${timeInterval.toString()}"/>
+  `)[0] as HTMLInputElement
+  const speedValue = createElementFromHTML(`<span class="speed-value">${timeInterval} ms</span>`)[0]
+  const button = createElementFromHTML(`<button class="btn-game">Start</button>`)[0] as HTMLButtonElement
+  const field = createGrid(size)
+
+  sizeInput.addEventListener('input', (ev) => {
+    const input = ev.target as HTMLInputElement
+    const value = Number(input.value)
+
+    if (value > 100) input.value = '100'
+    if (value < 3) input.value = '3'
+  })
 
   speedInput.addEventListener('input', (ev) => {
     const input = ev.target as HTMLInputElement
-    ;(speedValue as HTMLInputElement).textContent = input.value + ' ms'
+    speedValue.textContent = input.value + ' ms'
   })
-  const button = appendWithElement(container, 'button', 'btn-game', 'Start')
 
-  const field: HTMLElement = createGrid(size)
+  container.append(controls)
+  controls.append(sizeInput)
+  controls.append(speedInput)
+  controls.append(speedValue)
+  container.append(button)
+
   container.append(field)
 
-  return [field, sizeInput, speedInput, button]
+  return { field, sizeInput, speedInput, button }
 }
+
+export { createMarkUp }

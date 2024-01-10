@@ -1,74 +1,49 @@
-// import initArray from './init-array'
+import { createCell } from './create-cell'
 
-export default function renderGrid(container: HTMLElement, size: number, data: number[][] | null): number {
+export function renderGrid(container: HTMLElement, size: number, gridData: number[][] | null): number {
   const grid: HTMLElement | null = container.querySelector('.field')
-  const gridData = data
   if (gridData === null || grid === null) return 0
   let liveCells = 0
-  const cells = Array.from(container.querySelectorAll('.cell')).reduce((acc: HTMLElement[][], el, i, arr) => {
-    if (i % Math.sqrt(arr.length) === 0) {
-      acc.push([el as HTMLElement])
+
+  const rows = Array.from(container.querySelectorAll('.row'))
+  const cells = rows.reduce((rowsAcc: HTMLElement[][], row, rowNum) => {
+    if (rowNum < size) {
+      const rowCells = Array.from(row.children).reduce((cellsAcc: HTMLElement[], cell, cellNum) => {
+        if (cellNum < size) {
+          cell.setAttribute('data-state', gridData[rowNum][cellNum].toString())
+          liveCells += gridData[rowNum][cellNum]
+          cellsAcc.push(cell as HTMLElement)
+        } else {
+          cell.remove()
+        }
+        return cellsAcc
+      }, [])
+      if (rowCells.length < size) {
+        for (let i = rowCells.length; i < size; i += 1) {
+          const cell = createCell(rowNum, i)
+          row.append(cell)
+          rowCells.push(cell)
+        }
+      }
+      rowsAcc.push(rowCells)
     } else {
-      acc[acc.length - 1].push(el as HTMLElement)
+      row.remove()
     }
-    return acc
+    return rowsAcc
   }, [])
 
-  if (cells.length === size) {
-    gridData?.forEach((row, i) => {
-      row.forEach((cellData, j) => {
-        const cell = cells[i][j]
-        cell.setAttribute('data-state', cellData.toString())
-        cell.style.cssText = `width: calc(100% / ${size}); height: calc(100% / ${size});`
-        liveCells += gridData[i][j]
-      })
-    })
-  } else if (cells.length > size) {
-    cells.forEach((row, i) => {
-      if (i < size) {
-        row.forEach((cell, j) => {
-          if (j < size) {
-            cell.setAttribute('data-state', gridData[i][j].toString())
-            cell.style.cssText = `width: calc(100% / ${size}); height: calc(100% / ${size});`
-            liveCells += gridData[i][j]
-          } else {
-            cell.remove()
-          }
-        })
-      } else {
-        const rowEl = row[0].parentElement
-        rowEl?.remove()
+  if (cells.length < size) {
+    for (let i = cells.length; i < size; i += 1) {
+      const newRow = document.createElement('tr')
+      newRow.className = 'row'
+      cells[i] = []
+      for (let j = 0; j < size; j += 1) {
+        const cell = createCell(i, j)
+        newRow.append(cell)
+        cells[i].push(cell)
       }
-    })
-  } else {
-    const oldSize = cells.length
-    gridData?.forEach((rowData, i) => {
-      let row: HTMLElement | null
-      if (i >= oldSize) {
-        row = document.createElement('tr')
-        row.className = 'row'
-        grid.appendChild(row)
-      } else {
-        row = cells[i][0].parentElement
-      }
-      rowData.forEach((cellData, j) => {
-        let cell: HTMLElement
-        if (i >= oldSize || j >= oldSize) {
-          cell = document.createElement('td')
-          row?.append(cell)
-
-          cell.setAttribute('data-x', i.toString())
-          cell.setAttribute('data-y', j.toString())
-          cell.classList.add('cell')
-        } else {
-          cell = cells[i][j]
-        }
-        cell.setAttribute('data-state', cellData.toString())
-        cell.style.cssText = `width: calc(100% / ${size}); height: calc(100% / ${size});`
-        liveCells += gridData[i][j]
-      })
-    })
+      grid.append(newRow)
+    }
   }
-
   return liveCells
 }

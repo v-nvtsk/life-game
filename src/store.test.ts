@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals'
-import Store from './store'
+import { Store } from './store'
 
 describe('Store', () => {
   it('should be a class', () => {
