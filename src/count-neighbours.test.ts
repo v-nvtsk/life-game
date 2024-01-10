@@ -1,12 +1,12 @@
-import { describe, expect, it } from '@jest/globals'
-import { countNeighbours } from './count-neighbours'
+import { describe, expect, it } from "@jest/globals";
+import { countNeighbours } from "./count-neighbours";
 
-describe('countNeighbours', () => {
-  it('should be a function', () => {
-    expect(countNeighbours).toBeInstanceOf(Function)
-  })
+describe("countNeighbours", () => {
+  it("should be a function", () => {
+    expect(countNeighbours).toBeInstanceOf(Function);
+  });
 
-  it('should return number of alive neighbours', () => {
+  it("should return number of alive neighbours", () => {
     const testData = [
       {
         field: [
@@ -44,13 +44,13 @@ describe('countNeighbours', () => {
           [3, 5, 3],
         ],
       },
-    ]
+    ];
     testData.forEach(({ field, result }) => {
       field.forEach((row, i): void => {
         row.forEach((cell, j): void => {
-          expect(countNeighbours({ field, cellRow: i, cellCol: j })).toBe(result[i][j])
-        })
-      })
-    })
-  })
-})
+          expect(countNeighbours({ field, cellRow: i, cellCol: j })).toBe(result[i][j]);
+        });
+      });
+    });
+  });
+});
