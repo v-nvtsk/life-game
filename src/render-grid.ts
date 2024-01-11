@@ -18,6 +18,8 @@ export function renderGrid(container: HTMLElement, size: number, gridData: numbe
         }
         return cellsAcc;
       }, []);
+
+      // add cells to row if grid upsized
       if (rowCells.length < size) {
         for (let i = rowCells.length; i < size; i += 1) {
           const cell = createCell(rowNum, i);
@@ -32,6 +34,7 @@ export function renderGrid(container: HTMLElement, size: number, gridData: numbe
     return rowsAcc;
   }, []);
 
+  // add rows if grid upsized
   if (cells.length < size) {
     for (let i = cells.length; i < size; i += 1) {
       const newRow = document.createElement("tr");
