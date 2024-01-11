@@ -1,5 +1,5 @@
-import { createElementFromHTML } from "./create-element-from-html";
-import { createGrid } from "./create-grid";
+import { createElementFromHTML } from "./utils/create-element-from-html";
+import { createGrid } from "./utils/create-grid";
 
 interface CreateMarkUpRequest {
   container: HTMLElement;

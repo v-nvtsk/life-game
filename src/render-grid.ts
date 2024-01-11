@@ -1,4 +1,4 @@
-import { createCell } from "./create-cell";
+import { createCell } from "./utils/create-cell";
 
 export function renderGrid(container: HTMLElement, size: number, gridData: number[][] | null): number {
   const grid: HTMLElement | null = container.querySelector(".field");
