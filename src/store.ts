@@ -1,4 +1,4 @@
-import initArray from "./init-array";
+import initArray from "./utils/init-array";
 
 export class Store {
   private store: number[][] = [[]];
