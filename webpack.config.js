@@ -9,6 +9,7 @@ module.exports = (env, argv) => {
     entry: "./index.ts",
     devtool: "inline-source-map",
     output: {
+      title: '"Life" game',
       filename: "bundle.js",
     },
     resolve: {
