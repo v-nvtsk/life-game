@@ -15,6 +15,8 @@ interface Markup {
 }
 
 function createMarkUp({ container, size, timeInterval }: CreateMarkUpRequest): Markup {
+  document.documentElement.style.cssText = `--grid-size: ${size}`;
+
   const controls = createElementFromHTML('<div class="controls"></div>')[0];
   const sizeInput = createElementFromHTML(`
     <input class="size-input" type="number" min="3" max="100" value="${size.toString()}"/>
