@@ -73,6 +73,21 @@ export default class Game {
           }
         }
       },
+      onTouchMove: (ev: TouchEvent) => {
+        if (ev.touches.length > 1) return;
+        ev.preventDefault();
+        const cell: HTMLElement = document.elementFromPoint(
+          ev.touches[0].clientX,
+          ev.touches[0].clientY,
+        ) as HTMLElement;
+        const isCell: boolean = cell.classList?.contains("cell");
+        if (isCell) {
+          cell.dataset.state = "1";
+          const x = Number(cell.dataset.x);
+          const y = Number(cell.dataset.y);
+          this.store.setCellState(x, y, 1);
+        }
+      },
       onClick: (ev: MouseEvent) => {
         const isCell: boolean = (ev.target as HTMLElement).classList.contains("cell");
         if (isCell) {
@@ -87,7 +102,7 @@ export default class Game {
     };
 
     field.addEventListener("click", mouseCallbacks.onClick);
-
+    field.addEventListener("touchmove", mouseCallbacks.onTouchMove, { passive: false });
     field.addEventListener("mousedown", mouseCallbacks.onDown);
     field.addEventListener("mousemove", mouseCallbacks.onMove);
   }
