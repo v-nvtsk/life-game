@@ -1,7 +1,6 @@
 type CallbackFunction = (ev: Event) => void;
 
 const debounceResize = (func: CallbackFunction, ms: number): CallbackFunction => {
-  // const self = this;
   let timerId: NodeJS.Timeout | null = null;
   return (ev: Event) => {
     if (timerId !== null) {
