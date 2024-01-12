@@ -9,10 +9,10 @@
     "test": "jest ./src --coverage",
     "test:watch": "jest ./src --watch",
     "prepare": "husky install",
-    "lint": "npx eslint ./src/**/*.ts",
+    "lint": "npx eslint .",
     "lint:fix": "npm run lint -- --fix",
-    "prettier": "npx prettier src --check",
-    "prettier:fix": "npx prettier src --write",
+    "prettier": "npx prettier . --check",
+    "prettier:fix": "npx prettier . --write",
     "format": "npm run prettier:fix && npm run lint:fix",
     "type-check": "npx tsc --noEmit"
   },
