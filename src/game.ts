@@ -2,6 +2,7 @@ import { createMarkUp } from "./create-markup";
 import { doStep } from "./do-step";
 import { renderGrid } from "./render-grid";
 import { Store } from "./store";
+import { debounceResize } from "./utils/debounceResize";
 
 export default class Game {
   private readonly store: Store;
@@ -21,44 +22,41 @@ export default class Game {
       size: this.size,
       timeInterval: this.timeInterval,
     });
-    const inputCallbacks = {
-      onSizeChange: (ev: Event) => {
+
+    this.initControlsHandlers(sizeInput, speedInput, button);
+    this.initMouseHandlers(field);
+  }
+
+  initControlsHandlers(sizeInput: HTMLInputElement, speedInput: HTMLInputElement, button: HTMLElement): void {
+    const callbacks = {
+      onSizeChange: debounceResize((ev: Event): void => {
         const input = ev.target as HTMLInputElement;
         this.size = Number(input.value);
         document.documentElement.style.cssText = `--grid-size: ${this.size}`;
         this.store.resize(this.size);
         renderGrid(this.container, this.size, this.store.getCells());
-      },
-      onSpeedChange: (ev: Event) => {
+      }, 300),
+      onSpeedChange: (ev: Event): void => {
         const input = ev.target as HTMLInputElement;
         this.timeInterval = Number(input.value);
         if (this.timerId !== null) {
-          this.restart(gameCallbacks.onStop);
+          this.restart(button);
         }
       },
     };
 
-    sizeInput.addEventListener("input", inputCallbacks.onSizeChange);
-    speedInput.addEventListener("input", inputCallbacks.onSpeedChange);
+    sizeInput.addEventListener("input", callbacks.onSizeChange);
+    speedInput.addEventListener("input", callbacks.onSpeedChange);
     button.addEventListener("click", (ev) => {
       if (this.timerId === null) {
-        gameCallbacks.onStart();
+        this.start(button);
       } else {
-        gameCallbacks.onStop();
+        this.stop(button);
       }
     });
+  }
 
-    const gameCallbacks = {
-      onStart: () => {
-        button.innerHTML = "Stop";
-        this.start(gameCallbacks.onStop);
-      },
-      onStop: () => {
-        button.innerHTML = "Start";
-        this.stop();
-      },
-    };
-
+  initMouseHandlers(field: HTMLElement): void {
     const mouseCallbacks = {
       onDown: (ev: MouseEvent) => {
         ev.preventDefault();
@@ -77,7 +75,7 @@ export default class Game {
       },
       onClick: (ev: MouseEvent) => {
         const isCell: boolean = (ev.target as HTMLElement).classList.contains("cell");
-        if (ev.target !== null && isCell) {
+        if (isCell) {
           const cell: HTMLElement = ev.target as HTMLElement;
           const state = cell.dataset.state;
           cell.dataset.state = state === "1" ? "0" : "1";
@@ -94,27 +92,29 @@ export default class Game {
     field.addEventListener("mousemove", mouseCallbacks.onMove);
   }
 
-  restart(stopCallback: () => void): void {
-    this.stop();
-    this.start(stopCallback);
+  restart(button: HTMLElement): void {
+    this.stop(button);
+    this.start(button);
   }
 
-  start(stopCallback: () => void): void {
+  start(button: HTMLElement): void {
     if (this.timerId === null) {
+      button.innerHTML = "Stop";
       this.timerId = setInterval(() => {
         const fieldState = this.store.getCells();
         const newFieldState = doStep(fieldState);
         const aliveCells = renderGrid(this.container, this.size, fieldState);
         if (aliveCells === 0) {
-          stopCallback();
+          this.stop(button);
         }
         this.store.setCells(newFieldState);
       }, this.timeInterval);
     }
   }
 
-  stop(): void {
+  stop(button: HTMLElement): void {
     if (this.timerId !== null) {
+      button.innerHTML = "Start";
       clearInterval(this.timerId);
       this.timerId = null;
     }
@@ -122,9 +122,5 @@ export default class Game {
 
   public getCell(x: number, y: number): number {
     return this.store.getCell(x, y);
-  }
-
-  public getCells(): number[][] {
-    return this.store.getCells();
   }
 }

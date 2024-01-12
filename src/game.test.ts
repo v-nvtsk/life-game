@@ -55,18 +55,22 @@ describe("Game", () => {
   });
 
   it("should not start game if already started", () => {
-    button?.click();
-    game.start(() => {});
-    expect(setInterval).toHaveBeenCalledTimes(1);
+    if (button !== null) {
+      button.click();
+      game.start(button);
+      expect(setInterval).toHaveBeenCalledTimes(1);
 
-    button?.click();
-    button?.click();
-    expect(setInterval).toHaveBeenCalledTimes(2);
+      button.click();
+      button.click();
+      expect(setInterval).toHaveBeenCalledTimes(2);
+    }
   });
 
   it("should not stop game if already stopped", () => {
-    game.stop();
-    game.stop();
+    if (button !== null) {
+      game.stop(button);
+      game.stop(button);
+    }
     expect(clearInterval).not.toHaveBeenCalled();
   });
 
@@ -101,6 +105,7 @@ describe("Game", () => {
       const newSize = 10;
       sizeInput.value = newSize.toString();
       sizeInput.dispatchEvent(new Event("input"));
+      jest.runAllTimers();
       const cells = Array.from(document.querySelectorAll(".cell"));
       expect(cells.length).toBe(newSize ** 2);
     }
@@ -152,8 +157,24 @@ describe("Game", () => {
         ],
         expectedField: [
           [0, 0, 0, 0, 0],
+          [0, 0, 3, 0, 0],
+          [0, 0, 1, 0, 0],
+          [0, 0, 3, 0, 0],
           [0, 0, 0, 0, 0],
-          [0, 1, 1, 1, 0],
+        ],
+      },
+      {
+        testField: [
+          [0, 0, 0, 0, 0],
+          [0, 0, 3, 0, 0],
+          [0, 0, 1, 0, 0],
+          [0, 0, 3, 0, 0],
+          [0, 0, 0, 0, 0],
+        ],
+        expectedField: [
+          [0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0],
+          [0, 3, 1, 3, 0],
           [0, 0, 0, 0, 0],
           [0, 0, 0, 0, 0],
         ],
@@ -161,18 +182,19 @@ describe("Game", () => {
     ];
 
     const cells = Array.from(document.querySelectorAll(".cell"));
-    testData.forEach(({ testField, expectedField }) => {
-      testField.flat().forEach((state, i) => {
-        const cell = cells[i] as HTMLElement;
-        if (state === 1) cell.click();
-      });
-      button?.click();
-
-      expect(game.getCells()).not.toEqual(expectedField);
-
-      jest.advanceTimersByTime(timeOut + 1);
-      expect(game.getCells()).toEqual(expectedField);
+    testData[0].testField.flat().forEach((state, i) => {
+      const cell = cells[i] as HTMLElement;
+      if (state === 1) cell.click();
     });
+    button?.click();
+
+    jest.advanceTimersByTime(timeOut + 1);
+    let cellState = cells.map((el) => Number((el as HTMLElement).dataset.state));
+    expect(cellState).toEqual(testData[0].expectedField.flat());
+
+    jest.advanceTimersByTime(timeOut + 1);
+    cellState = cells.map((el) => Number((el as HTMLElement).dataset.state));
+    expect(cellState).toEqual(testData[1].expectedField.flat());
   });
 
   it("should draw on mouseMove", () => {
