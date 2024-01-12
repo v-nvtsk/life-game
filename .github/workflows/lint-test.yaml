@@ -13,7 +13,7 @@ jobs:
       - name: Install Packages
         run: |
           npm ci
-      
+
       - name: Lint
         run: npm run lint
 

@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = (env, argv) => {
   return {
-    mode: env.mode === 'development' ? 'development' : 'production',
-    context: path.resolve(__dirname, 'src'),
-    entry: './index.ts',
-    devtool: 'inline-source-map',
+    mode: env.mode === "development" ? "development" : "production",
+    context: path.resolve(__dirname, "src"),
+    entry: "./index.ts",
+    devtool: "inline-source-map",
     output: {
-      filename: 'bundle.js'
+      filename: "bundle.js",
     },
     resolve: {
-      extensions: ['.js', '.ts'],
+      extensions: [".js", ".ts"],
     },
     module: {
       rules: [
@@ -24,17 +24,17 @@ module.exports = (env, argv) => {
           test: /\.tsx?$/,
           use: [
             {
-              loader: 'babel-loader',
+              loader: "babel-loader",
               options: {
                 cacheDirectory: true,
-                presets: [['@babel/preset-env', { targets: { node: '8' } }]]
-              }
-            }
+                presets: [["@babel/preset-env", { targets: { node: "8" } }]],
+              },
+            },
           ],
-          exclude: /node_modules/
+          exclude: /node_modules/,
         },
-      ]
+      ],
     },
     plugins: [new HtmlWebpackPlugin()],
-  }
-}
+  };
+};

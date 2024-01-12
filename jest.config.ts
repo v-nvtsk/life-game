@@ -1,9 +1,10 @@
+/* eslint-disable max-len */
 /**
  * For a detailed explanation regarding each configuration property, visit:
  * https://jestjs.io/docs/configuration
  */
 
-import type { Config } from 'jest'
+import type { Config } from "jest";
 
 const config: Config = {
   // All imported modules in your tests should be mocked automatically
@@ -25,7 +26,7 @@ const config: Config = {
   // collectCoverageFrom: undefined,
 
   // The directory where Jest should output its coverage files
-  coverageDirectory: 'coverage',
+  coverageDirectory: "coverage",
 
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [
@@ -37,11 +38,11 @@ const config: Config = {
 
   // A list of reporter names that Jest uses when writing coverage reports
   coverageReporters: [
-    'json',
-    'json-summary',
-    'text'
-  //   "lcov",
-  //   "clover"
+    "json",
+    "json-summary",
+    "text",
+    //   "lcov",
+    //   "clover"
   ],
 
   // An object that configures minimum threshold enforcement for coverage results
@@ -50,7 +51,7 @@ const config: Config = {
       branches: 80,
       functions: 80,
       lines: 80,
-      statements: -10
+      statements: -10,
     },
   },
 
@@ -87,11 +88,11 @@ const config: Config = {
 
   // An array of file extensions your modules use
   moduleFileExtensions: [
-    'js',
+    "js",
     //   "mjs",
     //   "cjs",
     //   "jsx",
-    'ts',
+    "ts",
     //   "tsx",
     //   "json",
     //   "node"
@@ -116,7 +117,7 @@ const config: Config = {
   // projects: undefined,
 
   // Use this configuration option to add custom reporters to Jest
-  reporters: ['default', ['jest-junit', { outputDirectory: 'reports', outputName: 'report.xml' }]],
+  reporters: ["default", ["jest-junit", { outputDirectory: "reports", outputName: "report.xml" }]],
 
   // Automatically reset mock state before every test
   // resetMocks: false,
@@ -154,7 +155,7 @@ const config: Config = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: 'jsdom',
+  testEnvironment: "jsdom",
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
@@ -174,7 +175,7 @@ const config: Config = {
   // ],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
-  testRegex: '(\\.(test|spec))\\.(ts)$',
+  testRegex: "(\\.(test|spec))\\.(ts)$",
 
   // This option allows the use of a custom results processor
   // testResultsProcessor: undefined,
@@ -202,6 +203,6 @@ const config: Config = {
 
   // Whether to use watchman for file crawling
   watchman: true,
-}
+};
 
-export default config
+export default config;
