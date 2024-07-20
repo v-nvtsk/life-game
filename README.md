@@ -1,6 +1,6 @@
 [![Lint and Test](https://github.com/v-nvtsk/otus-jsbasic-dz24-life/actions/workflows/lint-test.yaml/badge.svg)](https://github.com/v-nvtsk/otus-jsbasic-dz24-life/actions/workflows/lint-test.yaml) ![Endpoint Badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fv-nvtsk%2Ff9b687636482339cabd6a8c4b369f3eb%2Fraw%2F6d10b8af87097de7c5f9c876931dd8beba01f3c1%2Fotus-jsbasic-dz24-life-junit-tests.json) [![pages-build-deployment](https://github.com/v-nvtsk/otus-jsbasic-dz24-life/actions/workflows/pages/pages-build-deployment/badge.svg?branch=gh-pages)](https://github.com/v-nvtsk/otus-jsbasic-dz24-life/actions/workflows/pages/pages-build-deployment) ![GitHub repo size](https://img.shields.io/github/repo-size/v-nvtsk/otus-jsbasic-dz24-life)
 
-# Домашнее задание - Игра "Жизнь"
+# Игра "Жизнь"
 
 <center> <img src="./docs/app-img.png" width="600" /> </center>
 
@@ -19,7 +19,7 @@
 Возможно добавление новых живых ячеек в процессе игры кликом на одиночной ячейке или движением мыши при нажатой левой кнопке мыши.
 В процессе игры можно менять размеры поля и скорость игры (время между ходами).
 
-Рабочая версия проекта доступна по ссылке: [https://v-nvtsk.github.io/otus-jsbasic-dz24-life/](https://v-nvtsk.github.io/otus-jsbasic-dz24-life/)
+Рабочая версия проекта доступна по ссылке: [https://v-nvtsk.github.io/life-game/](https://v-nvtsk.github.io/life-game/)
 
 ## Детальное описание
 

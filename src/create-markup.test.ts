@@ -8,7 +8,7 @@ describe("createGame", () => {
 
   let field: HTMLElement | null;
   let btnStart: HTMLElement | null;
-  let sizeInput!: HTMLInputElement | null;
+  let sizeInput: HTMLInputElement | null;
   let speedInput: HTMLInputElement | null;
   beforeEach(() => {
     const container = document.createElement("div");
