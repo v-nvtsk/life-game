@@ -10,17 +10,19 @@ export function countNeighbours({ field, cellRow, cellCol }: Request): number {
 
   [-1, 0, 1].forEach((rowNum) => {
     [-1, 0, 1].forEach((colNum) => {
-      const neighbourRow = cellRow + rowNum;
-      const neighbourCol = cellCol + colNum;
-      const isInsideField =
-        neighbourRow >= 0 && neighbourCol >= 0 && neighbourRow <= fieldSize - 1 && neighbourCol <= fieldSize - 1;
-      if (isInsideField) {
-        const isCellDying = field[cellRow + rowNum][cellCol + colNum] === 3;
-        if (isCellDying) {
-          aliveNeighboursCount = aliveNeighboursCount + 1;
-        } else {
-          aliveNeighboursCount = aliveNeighboursCount + field[cellRow + rowNum][cellCol + colNum];
-        }
+      let neighbourRow = cellRow + rowNum;
+      if (neighbourRow < 0) neighbourRow = fieldSize - 1;
+      if (neighbourRow > fieldSize - 1) neighbourRow = 0;
+
+      let neighbourCol = cellCol + colNum;
+      if (neighbourCol < 0) neighbourCol = fieldSize - 1;
+      if (neighbourCol > fieldSize - 1) neighbourCol = 0;
+
+      const isCellDying = field[neighbourRow][neighbourCol] === 3;
+      if (isCellDying) {
+        aliveNeighboursCount = aliveNeighboursCount + 1;
+      } else {
+        aliveNeighboursCount = aliveNeighboursCount + field[neighbourRow][neighbourCol];
       }
     });
   });
