@@ -55,22 +55,25 @@ describe("Game", () => {
   });
 
   it("should not start game if already started", () => {
-    if (button !== null) {
-      button.click();
-      game.start(button);
-      expect(setInterval).toHaveBeenCalledTimes(1);
-
-      button.click();
-      button.click();
-      expect(setInterval).toHaveBeenCalledTimes(2);
+    if (button === null) {
+      throw new Error("button not found");
     }
+    button.click();
+    game.start(button);
+    expect(setInterval).toHaveBeenCalledTimes(1);
+
+    button.click();
+    button.click();
+    expect(setInterval).toHaveBeenCalledTimes(2);
   });
 
   it("should not stop game if already stopped", () => {
-    if (button !== null) {
-      game.stop(button);
-      game.stop(button);
+    if (button === null) {
+      throw new Error("button not found");
     }
+    game.stop(button);
+    game.stop(button);
+
     expect(clearInterval).not.toHaveBeenCalled();
   });
 
@@ -78,37 +81,36 @@ describe("Game", () => {
     button?.click();
     const mock = jest.spyOn(game, "restart");
     expect(mock).not.toHaveBeenCalled();
-    if (speedInput !== null) {
-      speedInput.value = "1000";
-      speedInput.dispatchEvent(new Event("input"));
-      expect(mock).toHaveBeenCalled();
-    } else {
+    if (speedInput === null) {
       throw new Error("speedInput not found");
     }
+    speedInput.value = "1000";
+    speedInput.dispatchEvent(new Event("input"));
+    expect(mock).toHaveBeenCalled();
   });
 
   it("should not call restart on speed change if not started", () => {
     const mock = jest.spyOn(game, "restart");
     expect(mock).not.toHaveBeenCalled();
-    if (speedInput !== null) {
-      speedInput.value = "1000";
-      speedInput.dispatchEvent(new Event("input"));
-      expect(mock).not.toHaveBeenCalled();
-    } else {
+    if (speedInput === null) {
       throw new Error("speedInput not found");
     }
+    speedInput.value = "1000";
+    speedInput.dispatchEvent(new Event("input"));
+    expect(mock).not.toHaveBeenCalled();
   });
 
   it("should handle size change", () => {
     button?.click();
-    if (sizeInput !== null) {
-      const newSize = 10;
-      sizeInput.value = newSize.toString();
-      sizeInput.dispatchEvent(new Event("input"));
-      jest.runAllTimers();
-      const cells = Array.from(document.querySelectorAll(".cell"));
-      expect(cells.length).toBe(newSize ** 2);
+    if (sizeInput === null) {
+      throw new Error("sizeInput not found");
     }
+    const newSize = 10;
+    sizeInput.value = newSize.toString();
+    sizeInput.dispatchEvent(new Event("input"));
+    jest.runAllTimers();
+    const cells = Array.from(document.querySelectorAll(".cell"));
+    expect(cells.length).toBe(newSize ** 2);
   });
 
   it("should stop game on empty field", () => {
