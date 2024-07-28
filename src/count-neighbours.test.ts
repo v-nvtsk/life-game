@@ -27,9 +27,9 @@ describe("countNeighbours", () => {
           [0, 0, 0],
         ],
         result: [
-          [1, 2, 1],
-          [2, 1, 1],
-          [1, 1, 1],
+          [1, 2, 2],
+          [2, 1, 2],
+          [2, 2, 2],
         ],
       },
       {
@@ -39,16 +39,16 @@ describe("countNeighbours", () => {
           [1, 1, 1],
         ],
         result: [
-          [3, 5, 3],
-          [5, 8, 5],
-          [3, 5, 3],
+          [8, 8, 8],
+          [8, 8, 8],
+          [8, 8, 8],
         ],
       },
     ];
     testData.forEach(({ field, result }) => {
-      field.forEach((row, i): void => {
-        row.forEach((cell, j): void => {
-          expect(countNeighbours({ field, cellRow: i, cellCol: j })).toBe(result[i][j]);
+      field.forEach((row, cellRow): void => {
+        row.forEach((cell, cellCol): void => {
+          expect(countNeighbours({ field, cellRow, cellCol })).toBe(result[cellRow][cellCol]);
         });
       });
     });

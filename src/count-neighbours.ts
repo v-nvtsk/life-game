@@ -10,21 +10,31 @@ export function countNeighbours({ field, cellRow, cellCol }: Request): number {
 
   [-1, 0, 1].forEach((rowNum) => {
     [-1, 0, 1].forEach((colNum) => {
-      const neighbourRow = cellRow + rowNum;
-      const neighbourCol = cellCol + colNum;
-      const isInsideField =
-        neighbourRow >= 0 && neighbourCol >= 0 && neighbourRow <= fieldSize - 1 && neighbourCol <= fieldSize - 1;
-      if (isInsideField) {
-        const isCellDying = field[cellRow + rowNum][cellCol + colNum] === 3;
-        if (isCellDying) {
-          aliveNeighboursCount = aliveNeighboursCount + 1;
-        } else {
-          aliveNeighboursCount = aliveNeighboursCount + field[cellRow + rowNum][cellCol + colNum];
-        }
+      // let neighbourRow = cellRow + rowNum;
+      // let neighbourCol = cellCol + colNum;
+      const [neighbourRow, neighbourCol] = cycleField(fieldSize, fieldSize, cellRow + rowNum, cellCol + colNum);
+
+      const isCellDying = field[neighbourRow][neighbourCol] === 3;
+      if (isCellDying) {
+        aliveNeighboursCount = aliveNeighboursCount + 1;
+      } else {
+        aliveNeighboursCount = aliveNeighboursCount + field[neighbourRow][neighbourCol];
       }
     });
   });
 
   aliveNeighboursCount = aliveNeighboursCount - field[cellRow][cellCol];
   return aliveNeighboursCount;
+}
+
+export function cycleField(maxRows: number, maxCols: number, currRow: number, currCol: number): [number, number] {
+  let row = currRow;
+  let col = currCol;
+  if (row < 0) row = maxRows - 1;
+  if (row > maxRows - 1) row = 0;
+
+  if (col < 0) col = maxCols - 1;
+  if (col > maxCols - 1) col = 0;
+
+  return [row, col];
 }
