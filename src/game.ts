@@ -1,141 +1,138 @@
-import { createMarkUp } from "./create-markup";
+import { createControls } from "./createControls";
 import { doStep } from "./do-step";
-import { renderGrid } from "./render-grid";
+import { type Controls, type GameController, type View } from "./interfaces";
 import { Store } from "./store";
 import { debounceResize } from "./utils/debounceResize";
+import { CanvasGrid } from "./view";
+import { Table } from "./view/table";
 
-export default class Game {
-  private readonly store: Store;
+export default class Game implements GameController {
+  controls: Controls;
+  stepCounter = 0;
+  // worker: Worker | null = null;
+
+  readonly store: Store;
+  private timeInterval: number = 400;
   private timerId: NodeJS.Timeout | null = null;
+  private readonly view: View;
 
   constructor(
     private readonly container: HTMLElement,
     private size: number = 30,
-    private timeInterval: number = 400,
+    private readonly viewtype?: string,
   ) {
     this.store = new Store(this.size);
+    const { fieldContainer, sizeInput, speedInput, playButton, randomButton, clearButton, message } = createControls({
+      container,
+      size,
+      timeInterval: this.timeInterval,
+    });
+    this.controls = {
+      fieldContainer,
+      sizeInput,
+      speedInput,
+      playButton,
+      randomButton,
+      clearButton,
+      message,
+    };
+    this.view =
+      viewtype === "table"
+        ? new Table(fieldContainer, this.size, this.onClick.bind(this))
+        : new CanvasGrid(fieldContainer, this.size, this.onClick.bind(this));
+
+    this.store.on<"changeAll">("changeAll", this.view.renderAll.bind(this.view));
+    this.store.on("changeDiff", this.view.renderDiff.bind(this.view));
+
+    this.initControlsHandlers();
+    // this.store.initRandom();
   }
 
   init(): void {
-    const { field, sizeInput, speedInput, button } = createMarkUp({
-      container: this.container,
-      size: this.size,
-      timeInterval: this.timeInterval,
-    });
-
-    this.initControlsHandlers(sizeInput, speedInput, button);
-    this.initMouseHandlers(field);
+    // this.view?.resizeHandler(this.size);
   }
 
-  initControlsHandlers(sizeInput: HTMLInputElement, speedInput: HTMLInputElement, button: HTMLElement): void {
+  initControlsHandlers(): void {
+    const controls = this.controls;
     const callbacks = {
       onSizeChange: debounceResize((ev: Event): void => {
         const input = ev.target as HTMLInputElement;
         this.size = Number(input.value);
-        document.documentElement.style.cssText = `--grid-size: ${this.size}`;
+        this.view?.resizeHandler(this.size);
+        this.view?.renderAll(this.store.getCells());
         this.store.resize(this.size);
-        renderGrid(this.container, this.size, this.store.getCells());
       }, 300),
       onSpeedChange: (ev: Event): void => {
         const input = ev.target as HTMLInputElement;
         this.timeInterval = Number(input.value);
         if (this.timerId !== null) {
-          this.restart(button);
+          this.restart();
         }
       },
     };
-
-    sizeInput.addEventListener("input", callbacks.onSizeChange);
-    speedInput.addEventListener("input", callbacks.onSpeedChange);
-    button.addEventListener("click", (ev) => {
+    controls.sizeInput.addEventListener("input", callbacks.onSizeChange);
+    controls.speedInput.addEventListener("input", callbacks.onSpeedChange);
+    controls.playButton.addEventListener("click", (ev) => {
       if (this.timerId === null) {
-        this.start(button);
+        this.start();
       } else {
-        this.stop(button);
+        this.stop();
       }
+    });
+
+    controls.randomButton.addEventListener("click", () => {
+      this.reinitCounter();
+      this.store.initRandom();
+    });
+
+    controls.clearButton.addEventListener("click", () => {
+      this.store.clear();
+      this.reinitCounter();
     });
   }
 
-  initMouseHandlers(field: HTMLElement): void {
-    const mouseCallbacks = {
-      onDown: (ev: MouseEvent) => {
-        ev.preventDefault();
-      },
-      onMove: (ev: MouseEvent) => {
-        const isCell: boolean = (ev.target as HTMLElement).classList?.contains("cell");
-        if (ev.buttons === 1) {
-          if (isCell) {
-            const cell: HTMLElement = ev.target as HTMLElement;
-            cell.dataset.state = "1";
-            const x = Number(cell.dataset.x);
-            const y = Number(cell.dataset.y);
-            this.store.setCellState(x, y, 1);
-          }
-        }
-      },
-      onTouchMove: (ev: TouchEvent) => {
-        if (ev.touches.length > 1) return;
-        ev.preventDefault();
-        const cell: HTMLElement = document.elementFromPoint(
-          ev.touches[0].clientX,
-          ev.touches[0].clientY,
-        ) as HTMLElement;
-        const isCell: boolean = cell.classList?.contains("cell");
-        if (isCell) {
-          cell.dataset.state = "1";
-          const x = Number(cell.dataset.x);
-          const y = Number(cell.dataset.y);
-          this.store.setCellState(x, y, 1);
-        }
-      },
-      onClick: (ev: MouseEvent) => {
-        const isCell: boolean = (ev.target as HTMLElement).classList.contains("cell");
-        if (isCell) {
-          const cell: HTMLElement = ev.target as HTMLElement;
-          const state = cell.dataset.state;
-          cell.dataset.state = state === "1" ? "0" : "1";
-          const x = Number(cell.dataset.x);
-          const y = Number(cell.dataset.y);
-          this.store.setCellState(x, y, Number(cell.dataset.state));
-        }
-      },
-    };
-
-    field.addEventListener("click", mouseCallbacks.onClick);
-    field.addEventListener("touchmove", mouseCallbacks.onTouchMove, { passive: false });
-    field.addEventListener("mousedown", mouseCallbacks.onDown);
-    field.addEventListener("mousemove", mouseCallbacks.onMove);
+  reinitCounter(): void {
+    this.stepCounter = 0;
+    this.controls.message.textContent = `Step: ${this.stepCounter}`;
   }
 
-  restart(button: HTMLElement): void {
-    this.stop(button);
-    this.start(button);
+  onClick(x: number, y: number, value?: number): void {
+    if (this.timerId !== null) return;
+
+    const newValue = value ?? (this.store.getCell(x, y) === 1 ? 0 : 1);
+    this.store.setCellState(x, y, newValue);
   }
 
-  start(button: HTMLElement): void {
+  restart(): void {
+    this.stop();
+    this.reinitCounter();
+    this.start();
+  }
+
+  start(): void {
     if (this.timerId === null) {
-      button.innerHTML = "Stop";
-      this.timerId = setInterval(() => {
-        const fieldState = this.store.getCells();
-        const newFieldState = doStep(fieldState);
-        const aliveCells = renderGrid(this.container, this.size, fieldState);
-        if (aliveCells === 0) {
-          this.stop(button);
-        }
-        this.store.setCells(newFieldState);
-      }, this.timeInterval);
+      this.controls.playButton.innerHTML = "Stop";
+      this.controls.clearButton.disabled = true;
+      this.controls.randomButton.disabled = true;
+      this.timerId = setInterval(this.runner.bind(this), this.timeInterval);
     }
   }
 
-  stop(button: HTMLElement): void {
+  runner(): void {
+    this.stepCounter += 1;
+    this.controls.message.textContent = `Step: ${this.stepCounter}`;
+    const fieldState = this.store.getCells();
+    const newFieldState = doStep(fieldState);
+    this.store.setCells(newFieldState);
+  }
+
+  stop(): void {
     if (this.timerId !== null) {
-      button.innerHTML = "Start";
+      this.controls.clearButton.disabled = false;
+      this.controls.randomButton.disabled = false;
+      this.controls.playButton.innerHTML = "Start";
       clearInterval(this.timerId);
       this.timerId = null;
     }
-  }
-
-  public getCell(x: number, y: number): number {
-    return this.store.getCell(x, y);
   }
 }

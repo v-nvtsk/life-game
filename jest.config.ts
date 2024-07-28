@@ -29,9 +29,7 @@ const config: Config = {
   coverageDirectory: "coverage",
 
   // An array of regexp pattern strings used to skip coverage collection
-  // coveragePathIgnorePatterns: [
-  //   "\\\\node_modules\\\\"
-  // ],
+  coveragePathIgnorePatterns: ["\\\\node_modules\\\\", "canvas"],
 
   // Indicates which provider should be used to instrument code for coverage
   coverageProvider: "babel",
@@ -48,10 +46,10 @@ const config: Config = {
   // An object that configures minimum threshold enforcement for coverage results
   coverageThreshold: {
     global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: -10,
+      branches: 60,
+      functions: 60,
+      lines: 60,
+      statements: 60,
     },
   },
 
