@@ -5,6 +5,9 @@ export function renderGrid(container: HTMLElement, size: number, gridData: numbe
   if (gridData === null || grid === null) return 0;
   let liveCells = 0;
 
+  // renderCanvas(gridData);
+  // requestAnimationFrame(renderCanvas.bind(null, container, gridData));
+
   const rows = Array.from(grid.querySelectorAll(".row"));
   const cells = rows.reduce((rowsAcc: HTMLElement[][], row, rowNum) => {
     if (rowNum < size) {
