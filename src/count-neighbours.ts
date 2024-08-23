@@ -10,8 +10,6 @@ export function countNeighbours({ field, cellRow, cellCol }: Request): number {
 
   [-1, 0, 1].forEach((rowNum) => {
     [-1, 0, 1].forEach((colNum) => {
-      // let neighbourRow = cellRow + rowNum;
-      // let neighbourCol = cellCol + colNum;
       const [neighbourRow, neighbourCol] = cycleField(fieldSize, fieldSize, cellRow + rowNum, cellCol + colNum);
 
       const isCellDying = field[neighbourRow][neighbourCol] === 3;
