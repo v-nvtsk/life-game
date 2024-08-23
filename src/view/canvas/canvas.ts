@@ -2,14 +2,10 @@ import { STYLE } from "../../constants";
 import { type CellRenderData, type DiffArray, type GameController, type View } from "../../interfaces";
 import { isNotVoid } from "../../utils/utility";
 
-// TODO: разобраться в причинах того, что остаётся след от умерших клеток
-// TODO: разобраться с привязкой к размеру пикселя
-// TODO: разобраться с масштабированием
 export class CanvasGrid implements View {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   cellSize: number = 1;
-  // lineWidth: number = 1;
   mouseMoving = false;
   ctrlPressed = false;
 
@@ -20,7 +16,6 @@ export class CanvasGrid implements View {
     private readonly style = STYLE,
   ) {
     this.canvas = this.createCanvasElement(container);
-
     const ctx = this.canvas.getContext("2d");
     if (ctx === null) throw new Error("Cannot create canvas context");
     this.ctx = ctx;
@@ -53,15 +48,12 @@ export class CanvasGrid implements View {
   }
 
   initCanvas(): void {
-    // получаю ширину и высоту элемента
-    // считаю размер одной ячейки
-    // пересчитываю размеры элемента исходя из целочисленного размера ячейки
-
     this.canvas.style.width = "";
-    this.canvas.style.height = ``;
-    const rect = this.canvas.getBoundingClientRect();
+    this.canvas.style.height = "";
 
-    this.cellSize = Math.floor(rect.width / this.size);
+    const rect = this.canvas.getBoundingClientRect();
+    const minSize = Math.min(rect.width, rect.height);
+    this.cellSize = Math.floor(minSize / this.size);
     if (this.cellSize < 1) this.cellSize = 1;
 
     this.canvas.width = this.cellSize * this.size;
@@ -109,28 +101,24 @@ export class CanvasGrid implements View {
 
   renderAll(data: number[][]): void {
     if (data === null) return;
-    requestAnimationFrame(() => {
-      this.ctx.beginPath();
-      for (let i = 0; i < data.length; i++) {
-        for (let j = 0; j < data[i].length; j++) {
-          const color = data[i][j] !== 0 ? this.style.cellColor : this.style.backgroundColor;
-          this.fillCell(i, j, color);
-        }
+    this.ctx.beginPath();
+    for (let i = 0; i < data.length; i++) {
+      for (let j = 0; j < data[i].length; j++) {
+        const color = data[i][j] !== 0 ? this.style.cellColor : this.style.backgroundColor;
+        this.fillCell(i, j, color);
       }
-      this.ctx.closePath();
-    });
+    }
+    this.ctx.closePath();
   }
 
   renderCell(data: CellRenderData, noPathControl?: boolean): void {
-    requestAnimationFrame(() => {
-      const { row, col, state } = data;
-      const color = state !== 0 ? this.style.cellColor : this.style.backgroundColor;
-      noPathControl ?? this.ctx.beginPath();
+    const { row, col, state } = data;
+    const color = state !== 0 ? this.style.cellColor : this.style.backgroundColor;
+    noPathControl ?? this.ctx.beginPath();
 
-      this.fillCell(row, col, color, true);
+    this.fillCell(row, col, color, true);
 
-      noPathControl ?? this.ctx.closePath();
-    });
+    noPathControl ?? this.ctx.closePath();
   }
 
   renderDiff(diffData: DiffArray): void {

@@ -9,10 +9,9 @@ import { Table } from "./view/table";
 export default class Game implements GameController {
   controls: Controls;
   stepCounter = 0;
-  // worker: Worker | null = null;
 
   readonly store: Store;
-  private timeInterval: number = 400;
+  private timeInterval: number = 200;
   private timerId: NodeJS.Timeout | null = null;
   private readonly view: View;
 
@@ -45,12 +44,10 @@ export default class Game implements GameController {
     this.store.on("changeDiff", this.view.renderDiff.bind(this.view));
 
     this.initControlsHandlers();
-    // this.store.initRandom();
+    this.store.initRandom();
   }
 
-  init(): void {
-    // this.view?.resizeHandler(this.size);
-  }
+  init(): void {}
 
   initControlsHandlers(): void {
     const controls = this.controls;
@@ -105,7 +102,6 @@ export default class Game implements GameController {
 
   restart(): void {
     this.stop();
-    this.reinitCounter();
     this.start();
   }
 
@@ -119,11 +115,13 @@ export default class Game implements GameController {
   }
 
   runner(): void {
-    this.stepCounter += 1;
-    this.controls.message.textContent = `Step: ${this.stepCounter}`;
-    const fieldState = this.store.getCells();
-    const newFieldState = doStep(fieldState);
-    this.store.setCells(newFieldState);
+    requestAnimationFrame(() => {
+      this.stepCounter += 1;
+      this.controls.message.textContent = `Step: ${this.stepCounter}`;
+      const fieldState = this.store.getCells();
+      const newFieldState = doStep(fieldState);
+      this.store.setCells(newFieldState);
+    });
   }
 
   stop(): void {
